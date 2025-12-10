@@ -27,9 +27,13 @@ const hivePiecesCount = (state) => {
   return count;
 };
 
-const queenRequirementActive = (state, player) =>
-  state.turnCounts[player] >= 3 &&
-  !Array.from(state.board.values()).some((stack) => stack.some((p) => p.player === player && p.type === 'queen'));
+const hasQueenOnBoard = (state, player) =>
+  Array.from(state.board.values()).some((stack) => stack.some((p) => p.player === player && p.type === 'queen'));
+
+const queenRequirementActive = (state, player) => {
+  const turnNumber = state.turnCounts[player] + 1; // turnCounts is completed turns
+  return turnNumber >= 4 && !hasQueenOnBoard(state, player);
+};
 
 const emptyCellsAdjacentToBoard = (state) => {
   const empty = new Set();
