@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, List
+from typing import Dict, List, Set
 
 from .board import (
     Board,
@@ -97,7 +97,7 @@ def _spider_moves(state: GameState, from_coord: Coord) -> List[Coord]:
     remove_top_piece(board_without, from_coord)
     results = set()
 
-    def dfs(current: Coord, depth: int, visited: set[str]) -> None:
+    def dfs(current: Coord, depth: int, visited: Set[str]) -> None:
         if depth == 3:
             results.add(current.key())
             return
@@ -208,17 +208,17 @@ def _player_pieces(state: GameState, player: str) -> List[dict]:
     return pieces
 
 
+def _move_signature(move: dict) -> tuple:
+    from_key = move.get("from").key() if move.get("from") else None
+    to_key = move.get("to").key() if move.get("to") else None
+    return (move.get("type"), move.get("pieceId"), move.get("pieceType"), from_key, to_key)
+
+
 def _dedupe_moves(moves: List[dict]) -> List[dict]:
-    seen = set()
+    seen: Set[tuple] = set()
     unique = []
     for m in moves:
-        sig = (
-            m["type"],
-            m.get("pieceId"),
-            getattr(m.get("from"), "key", lambda: None)(),
-            getattr(m.get("to"), "key", lambda: None)(),
-            m.get("pieceType"),
-        )
+        sig = _move_signature(m)
         if sig in seen:
             continue
         seen.add(sig)

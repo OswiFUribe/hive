@@ -26,6 +26,10 @@ def create_game() -> GameState:
     return GameState()
 
 
+def _clone_reserves(reserves: Dict[str, Dict[str, int]]) -> Dict[str, Dict[str, int]]:
+    return {player: dict(pool) for player, pool in reserves.items()}
+
+
 def next_player(player: str) -> str:
     return "black" if player == "white" else "white"
 
@@ -38,7 +42,7 @@ def next_piece_id(state: GameState, player: str, piece_type: str) -> str:
 def apply_placement(state: GameState, player: str, piece_type: str, coord: Coord, piece_id: Optional[str] = None) -> GameState:
     next_state = GameState(
         board=clone_board(state.board),
-        reserves={**state.reserves},
+        reserves=_clone_reserves(state.reserves),
         turn=state.turn,
         current_player=state.current_player,
         turn_counts=dict(state.turn_counts),
@@ -62,7 +66,7 @@ def apply_placement(state: GameState, player: str, piece_type: str, coord: Coord
 def apply_movement(state: GameState, player: str, piece_id: str, from_coord: Coord, to_coord: Coord) -> GameState:
     next_state = GameState(
         board=clone_board(state.board),
-        reserves=state.reserves,
+        reserves=_clone_reserves(state.reserves),
         turn=state.turn,
         current_player=state.current_player,
         turn_counts=dict(state.turn_counts),
