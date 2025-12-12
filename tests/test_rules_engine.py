@@ -29,7 +29,11 @@ class RulesEngineTests(unittest.TestCase):
         state.current_player = "white"
         moves = get_legal_moves(state, "white")
         beetle_id = top_piece(state.board, c(0, 1, -1))["id"]
-        beetle_climb = next((m for m in moves if m["type"] == "move" and m["pieceId"] == beetle_id and m["to"] == c(-1, 1, 0)), None)
+        target_key = c(-1, 1, 0).key()
+        beetle_climb = next(
+            (m for m in moves if m["type"] == "move" and m["pieceId"] == beetle_id and m["to"].key() == target_key),
+            None,
+        )
         self.assertIsNotNone(beetle_climb)
 
     def test_grasshopper_jump_line(self):
@@ -43,7 +47,9 @@ class RulesEngineTests(unittest.TestCase):
         moves = get_legal_moves(state, "white")
         hopper_id = top_piece(state.board, c(0, 0, 0))["id"]
         jump_target = c(3, -3, 0)
-        hopper_moves = [m for m in moves if m["type"] == "move" and m["pieceId"] == hopper_id and m["to"] == jump_target]
+        hopper_moves = [
+            m for m in moves if m["type"] == "move" and m["pieceId"] == hopper_id and m["to"].key() == jump_target.key()
+        ]
         self.assertEqual(len(hopper_moves), 1)
 
     def test_spider_three_steps(self):
@@ -57,7 +63,8 @@ class RulesEngineTests(unittest.TestCase):
         moves = get_legal_moves(state, "white")
         spider_id = top_piece(state.board, c(0, 0, 0))["id"]
         spider_targets = [m for m in moves if m["type"] == "move" and m["pieceId"] == spider_id]
-        self.assertTrue(all(m["to"] != c(0, 0, 0) for m in spider_targets))
+        origin_key = c(0, 0, 0).key()
+        self.assertTrue(all(m["to"].key() != origin_key for m in spider_targets))
         self.assertGreater(len(spider_targets), 0)
 
     def test_ant_sliding_paths(self):
