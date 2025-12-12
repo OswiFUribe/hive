@@ -1,0 +1,12 @@
+{
+  "name": "hive",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.py",
+  "scripts": {
+    "test": "python -m unittest discover -s tests -p \"test_*.py\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
