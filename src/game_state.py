@@ -30,6 +30,19 @@ def _clone_reserves(reserves: Dict[str, Dict[str, int]]) -> Dict[str, Dict[str, 
     return {player: dict(pool) for player, pool in reserves.items()}
 
 
+def clone_state(state: GameState, **overrides) -> GameState:
+    return GameState(
+        board=clone_board(state.board),
+        reserves=_clone_reserves(state.reserves),
+        turn=overrides.get("turn", state.turn),
+        current_player=overrides.get("current_player", state.current_player),
+        turn_counts=dict(state.turn_counts),
+        piece_positions=dict(state.piece_positions),
+        move_history=list(state.move_history),
+        piece_counters=dict(state.piece_counters),
+    )
+
+
 def next_player(player: str) -> str:
     return "black" if player == "white" else "white"
 

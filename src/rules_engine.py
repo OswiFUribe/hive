@@ -209,9 +209,18 @@ def _player_pieces(state: GameState, player: str) -> List[dict]:
 
 
 def _move_signature(move: dict) -> tuple:
-    from_key = move.get("from").key() if move.get("from") else None
-    to_key = move.get("to").key() if move.get("to") else None
-    return (move.get("type"), move.get("pieceId"), move.get("pieceType"), from_key, to_key)
+    def coord_key(value):
+        if value is None:
+            return None
+        return value.key() if hasattr(value, "key") else value
+
+    return (
+        move.get("type"),
+        move.get("pieceId"),
+        move.get("pieceType"),
+        coord_key(move.get("from")),
+        coord_key(move.get("to")),
+    )
 
 
 def _dedupe_moves(moves: List[dict]) -> List[dict]:

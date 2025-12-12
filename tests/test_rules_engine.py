@@ -1,6 +1,6 @@
 import unittest
 
-from src.game_state import create_game
+from src.game_state import create_game, clone_state
 from src.rules_engine import apply_action, get_legal_moves
 from src.coords import Coord
 from src.board import top_piece
@@ -26,7 +26,7 @@ class RulesEngineTests(unittest.TestCase):
         state = apply_action(state, "white", {"type": "place", "pieceType": "queen", "to": c(0, 0, 0)})
         state = apply_action(state, "black", {"type": "place", "pieceType": "queen", "to": c(-1, 1, 0)})
         state = apply_action(state, "white", {"type": "place", "pieceType": "beetle", "to": c(0, 1, -1)})
-        state.current_player = "white"
+        state = clone_state(state, current_player="white")
         moves = get_legal_moves(state, "white")
         beetle_id = top_piece(state.board, c(0, 1, -1))["id"]
         target_key = c(-1, 1, 0).key()
@@ -43,7 +43,7 @@ class RulesEngineTests(unittest.TestCase):
         state = apply_action(state, "white", {"type": "place", "pieceType": "ant", "to": c(2, -2, 0)})
         state = apply_action(state, "black", {"type": "place", "pieceType": "ant", "to": c(1, 0, -1)})
         state = apply_action(state, "white", {"type": "place", "pieceType": "queen", "to": c(0, 1, -1)})
-        state.current_player = "white"
+        state = clone_state(state, current_player="white")
         moves = get_legal_moves(state, "white")
         hopper_id = top_piece(state.board, c(0, 0, 0))["id"]
         jump_target = c(3, -3, 0)
@@ -59,7 +59,7 @@ class RulesEngineTests(unittest.TestCase):
         state = apply_action(state, "white", {"type": "place", "pieceType": "queen", "to": c(-1, 1, 0)})
         state = apply_action(state, "black", {"type": "place", "pieceType": "beetle", "to": c(1, 0, -1)})
         state = apply_action(state, "white", {"type": "place", "pieceType": "ant", "to": c(0, 1, -1)})
-        state.current_player = "white"
+        state = clone_state(state, current_player="white")
         moves = get_legal_moves(state, "white")
         spider_id = top_piece(state.board, c(0, 0, 0))["id"]
         spider_targets = [m for m in moves if m["type"] == "move" and m["pieceId"] == spider_id]
@@ -74,7 +74,7 @@ class RulesEngineTests(unittest.TestCase):
         state = apply_action(state, "white", {"type": "place", "pieceType": "queen", "to": c(-1, 1, 0)})
         state = apply_action(state, "black", {"type": "place", "pieceType": "beetle", "to": c(1, 0, -1)})
         state = apply_action(state, "white", {"type": "place", "pieceType": "beetle", "to": c(0, 1, -1)})
-        state.current_player = "white"
+        state = clone_state(state, current_player="white")
         moves = get_legal_moves(state, "white")
         ant_id = top_piece(state.board, c(0, 0, 0))["id"]
         ant_moves = [m for m in moves if m["type"] == "move" and m["pieceId"] == ant_id]
@@ -95,7 +95,7 @@ class RulesEngineTests(unittest.TestCase):
         state = apply_action(state, "white", {"type": "place", "pieceType": "ant", "to": c(0, 1, -1)})
         state = apply_action(state, "black", {"type": "place", "pieceType": "ant", "to": c(2, -2, 0)})
         state = apply_action(state, "white", {"type": "place", "pieceType": "ant", "to": c(-1, 1, 0)})
-        state.current_player = "white"
+        state = clone_state(state, current_player="white")
         moves = get_legal_moves(state, "white")
         non_queen = any(m["type"] == "place" and m["pieceType"] != "queen" for m in moves)
         queen_moves = [m for m in moves if m["type"] == "place" and m["pieceType"] == "queen"]
